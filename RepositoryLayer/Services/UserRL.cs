@@ -90,11 +90,7 @@ namespace RepositoryLayer.Services
                         user.Token = this.GetJWTToken(user.Email, UserId);
                         return user;
                     }
-                    //else
-                    //{
-                    //    //this.sqlConnection.Close();
-                    //    return null;
-                    //}
+                   
                 }
                 catch (Exception)
                 {
@@ -118,6 +114,7 @@ namespace RepositoryLayer.Services
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
+                    new Claim(ClaimTypes.Role, "User"),
                     new Claim("email", email),
                     new Claim("userID",userId.ToString())
                 }),
@@ -264,7 +261,7 @@ namespace RepositoryLayer.Services
                     if (i >= 1)
                     {
                         return true;
-                    }
+                    }  
                     else
                     {
                         return false;
