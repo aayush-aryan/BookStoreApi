@@ -243,5 +243,48 @@ namespace RepositoryLayer.Services
             return tokenHandler.WriteToken(token);
         }
 
+        public bool ResetPassword(string email, string newPassword, string confirmPassword)
+        {
+            try
+            {
+                if (newPassword == confirmPassword)
+                {
+                    this.sqlConnection = new SqlConnection(this.Configuration["ConnectionStrings:BooKStoreDb"]);
+                    SqlCommand com = new SqlCommand("spUserResetPassword", this.sqlConnection)
+                    {
+                        CommandType = CommandType.StoredProcedure 
+                    };
+
+                    com.Parameters.AddWithValue("@Email", email);
+                    com.Parameters.AddWithValue("@Password", confirmPassword);
+
+                    this.sqlConnection.Open();
+                    int i = com.ExecuteNonQuery();
+                    this.sqlConnection.Close();
+                    if (i >= 1)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            catch (Exception)
+            {
+
+                throw;
+            }
+            finally
+            {
+                this.sqlConnection.Close();
+            }
+        }
     }
 }

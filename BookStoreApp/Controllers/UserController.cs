@@ -1,10 +1,13 @@
 ﻿using BusinessLayer.Interface;
 using CommonLayer.model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace BookStoreApp.Controllers
@@ -74,6 +77,30 @@ namespace BookStoreApp.Controllers
             catch (Exception ex)
             {
                 return this.BadRequest(new { Success = false, message = ex.Message });
+            }
+        }
+        [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
+        // [Authorize]
+        [HttpPut("ResetPassword")]
+        public IActionResult ResetPassword(string newPassword, string confirmPassword)
+        {
+            try
+            {
+
+                var email = User.FindFirst(ClaimTypes.Email).Value.ToString();
+                //var email = User.Claims.FirstOrDefault(e => e.Type == "Email").Value.ToString();
+                if (this.userBL.ResetPassword(email, newPassword, confirmPassword))
+                {
+                    return this.Ok(new { Success = true, message = " Password Changed Successfully " });
+                }
+                else
+                {
+                    return this.BadRequest(new { Success = false, message = " Password Change Unsuccessfully " });
+                }
+            }
+            catch (Exception ex)
+            {
+                return this.BadRequest(new { Success = false, message = ex.Message });  
             }
         }
 
