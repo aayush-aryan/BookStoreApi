@@ -38,5 +38,23 @@ namespace BookStoreApp.Controllers
             }
         }
 
+        [HttpPost("login")]
+        public IActionResult LoginUser(string Email,String Password)
+        {
+            try
+            {
+                UserLogin userLogin = this.userBL.LoginUser(Email,Password);
+                if (userLogin != null)
+                {
+                    return this.Ok(new { Success = true, message = "User logged Sucessfully", Response = userLogin });
+                }
+                return this.Ok(new { Success = true, message = "Please check credential" });
+            }
+            catch (Exception ex)
+            {
+                return this.BadRequest(new { Success = false, message = ex.Message });
+            }
+        }
+
     }
 }
