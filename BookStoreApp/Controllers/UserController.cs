@@ -56,5 +56,26 @@ namespace BookStoreApp.Controllers
             }
         }
 
+        [HttpPost("ForgotPassword")]
+        public IActionResult ForgotPassword(string email)
+        {
+            try
+            {
+                var token = this.userBL.ForgotPassword(email);
+                if (token != null)
+                {
+                    return this.Ok(new { Success = true, message = " Mail Sent Successful", Response = token });
+                }
+                else
+                {
+                    return this.BadRequest(new { Success = false, message = "Enter Valid Email" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return this.BadRequest(new { Success = false, message = ex.Message });
+            }
+        }
+
     }
 }

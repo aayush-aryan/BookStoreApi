@@ -1,4 +1,5 @@
 ﻿using CommonLayer.model;
+using Experimental.System.Messaging;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -131,5 +132,116 @@ namespace RepositoryLayer.Services
             return tokenHandler.WriteToken(token);
 
         }
+
+
+        public string ForgotPassword(string email)
+        {
+            try
+            {
+                this.sqlConnection = new SqlConnection(this.Configuration["ConnectionStrings:BooKStoreDb"]);
+                SqlCommand com = new SqlCommand("spUserForgotPassword", this.sqlConnection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+                com.Parameters.AddWithValue("@Email", email);
+
+                this.sqlConnection.Open();
+
+                SqlDataReader reader = com.ExecuteReader(); // Execute sqlDataReader to fetching all records
+                if (reader.HasRows)  
+                {
+                    int userId = 0;
+                    UserLogin user = new UserLogin();
+                    while (reader.Read()) 
+                    {
+                        email = Convert.ToString(reader["Email"]);
+                        userId = Convert.ToInt32(reader["UserId"]);
+                    }
+                    this.sqlConnection.Close();
+
+                    MessageQueue queue;
+
+                    if (MessageQueue.Exists(@".\Private$\BookQueue"))
+                    {
+                        queue = new MessageQueue(@".\Private$\BookQueue");
+                    }
+                    else
+                    {
+                        queue = MessageQueue.Create(@".\Private$\BookQueue");
+                    }
+
+                    Message MyMessage = new Message();
+                    MyMessage.Formatter = new BinaryMessageFormatter();
+                    MyMessage.Body = this.GetJWTToken(email, userId);
+                    EmailService.SendMail(email, MyMessage.Body.ToString());
+                    queue.ReceiveCompleted += new ReceiveCompletedEventHandler(msmqQueue_ReciveCompleted);
+
+                    var token = this.GetJWTToken(email, userId);
+
+                    return token;
+                }
+                else
+                {
+                    this.sqlConnection.Close();
+                    return null;
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+        private void msmqQueue_ReciveCompleted(object sender, ReceiveCompletedEventArgs e)
+        {
+            try
+            {
+                {
+                    MessageQueue queue = (MessageQueue)sender;
+                    Message msg = queue.EndReceive(e.AsyncResult);
+                    EmailService.SendMail(e.Message.ToString(), GenerateToken(e.Message.ToString()));
+                    queue.BeginReceive();
+                }
+
+            }
+            catch (MessageQueueException ex)
+            {
+
+                if (ex.MessageQueueErrorCode ==
+                   MessageQueueErrorCode.AccessDenied)
+                {
+                    Console.WriteLine("Access is denied. " +
+                        "Queue might be a system queue.");
+                }
+                // Handle other sources of MessageQueueException.
+            }
+        }
+
+        private string GenerateToken(string email)
+        {
+            if (email == null)
+            {
+                return null;
+            }
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var tokenKey = Encoding.ASCII.GetBytes("THIS_IS_MY_KEY_TO_GENERATE_TOKEN");
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim("Email", email),
+                }),
+                Expires = DateTime.UtcNow.AddHours(1),
+                SigningCredentials =
+                new SigningCredentials(
+                    new SymmetricSecurityKey(tokenKey),
+                    SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
+
     }
 }
