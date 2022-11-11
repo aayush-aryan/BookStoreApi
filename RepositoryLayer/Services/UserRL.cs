@@ -104,7 +104,7 @@ namespace RepositoryLayer.Services
            }
 
 
-        private string GetJWTToken(string email, int userId)
+        public string GetJWTToken(string email, int userId)
         {
             //throw new NotImplementedException();
 
