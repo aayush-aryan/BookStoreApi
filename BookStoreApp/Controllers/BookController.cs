@@ -40,5 +40,25 @@ namespace BookStoreApp.Controllers
                 return this.BadRequest(new { Success = false, message = ex.Message });
             }
         }
+
+        [Authorize(Roles = Role.User)]
+        [HttpGet("GetBookById")]
+        [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
+        public IActionResult GetBookByBookId(int BookId) 
+        {
+            try
+            {
+                BookModel userData = this.bookBL.GetBookByBookId(BookId);
+                if (userData != null)
+                {
+                    return this.Ok(new { Success = true, message = "This is the Book which You wanted", Response = userData });
+                }
+                else { return this.BadRequest(new { Success = false, message = "Enter Valid BookId" }); }
+            }
+            catch (Exception ex)
+            {
+                return this.BadRequest(new { Success = false, message = ex.Message });
+            }
+        }
     }
 }
