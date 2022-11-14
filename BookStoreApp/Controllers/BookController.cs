@@ -101,5 +101,25 @@ namespace BookStoreApp.Controllers
             }
         }
 
+        [Authorize(Roles = Role.Admin)]
+        [HttpPut("UpdateBook")]
+        [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
+        public IActionResult UpdateBook(int BookId, BookModel Model)
+        {
+            try
+            {
+                var Data = this.bookBL.UpdateBook(BookId, Model);
+                if (Data == true)
+                {
+                    return this.Ok(new { Success = true, message = " Book Updated successfully", Response = Data });
+                }
+                else { return this.BadRequest(new { Success = false, message = "Enter Valid BookId" }); }
+            }
+            catch (Exception ex)
+            {
+                return this.BadRequest(new { Success = false, message = ex.Message });
+            }
+        }
+
     }
 }
