@@ -9,5 +9,8 @@ namespace RepositoryLayer.Interface
     {
         public BookModel AddBook(BookModel book);
         public BookModel GetBookByBookId(int BookId);
+
+        public List<BookModel> GetAllBooks();
+
     }
 }
