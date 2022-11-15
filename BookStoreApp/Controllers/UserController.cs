@@ -80,7 +80,8 @@ namespace BookStoreApp.Controllers
             }
         }
         [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
-        [HttpPut("ResetPassword")]
+        // [HttpPut("ResetPassword")]
+        [HttpPut("ResetPassword/{newPassword}/{confirmPassword}")]
         public IActionResult ResetPassword(string newPassword, string confirmPassword)
         {
             try

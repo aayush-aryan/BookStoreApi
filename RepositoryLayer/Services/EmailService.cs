@@ -32,9 +32,9 @@ namespace RepositoryLayer.Services
                                     $"<meta charset=\"UTF - 8\">" +
                                     $"</head>" +
                                     $"<body>" +
-                                    $"<h2> Dear Fundoo User, </h2>\n" +
+                                    $"<h2> Dear BookStore User, </h2>\n" +
                                     $"<h3> Please click on the below link to reset password</h3>" +
-                                    $"<a href='http://localhost:4200/reset/{token}'> ClickHere </a>\n " +
+                                    $"<a href='https://localhost:44340/api/User/ResetPassword/aayush123/aayush123'> ClickHere </a>\n " +
                                     $"<h3 style = \"color: #EA4335\"> \nThe link is valid for 1 hour </h3>" +
                                     $"</body>" +
                                    $"</html>";
