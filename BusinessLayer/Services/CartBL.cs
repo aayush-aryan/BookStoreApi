@@ -26,5 +26,40 @@ namespace BusinessLayer.Services
                 throw;
             }
         }
+
+        public string DeleteCart(int CartId)
+        {
+            try
+            {
+                return this.cartRL.DeleteCart(CartId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public bool UpdateCart(int CartId, int BooksQty)
+        {
+            try
+            {
+                return this.cartRL.UpdateCart(CartId, BooksQty);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public List<CartModel> GetAllBooksinCart(int UserId)
+        {
+            try
+            {
+                return this.cartRL.GetAllBooksinCart(UserId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }
