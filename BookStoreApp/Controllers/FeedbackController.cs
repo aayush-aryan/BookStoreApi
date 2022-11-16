@@ -44,5 +44,27 @@ namespace BookStoreApp.Controllers
                 return this.BadRequest(new { Success = false, message = ex.Message });
             }
         }
+        [Authorize(Roles = Role.User)]
+        [HttpGet("GetFeedback")]
+        [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
+        public IActionResult GetFeedback(int bookId)
+        {
+            try
+            {
+                var result = this.feedbackBL.GetAllFeedback(bookId);
+                if (result != null)
+                {
+                    return this.Ok(new { Status = true, Message = "Successfully Feedback For Given Book Id Fetched ANd Displayed ", Response = result });
+                }
+                else
+                {
+                    return this.BadRequest(new { Status = false, Message = " Enter Correct BookId" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return this.BadRequest(new { Success = false, message = ex.Message });
+            }
+        }
     }
 }

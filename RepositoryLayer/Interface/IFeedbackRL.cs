@@ -8,5 +8,6 @@ namespace RepositoryLayer.Interface
    public interface IFeedbackRL
     {
         public FeedBackModel AddFeedback(FeedBackModel feedbackModel, int userId);
+        public List<DisplayFeedback> GetAllFeedback(int bookId);
     }
 }

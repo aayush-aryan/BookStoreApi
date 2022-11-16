@@ -8,5 +8,6 @@ namespace BusinessLayer.Interface
     public interface IFeedbackBL
     {
         public FeedBackModel AddFeedback(FeedBackModel feedbackModel, int userId);
+        public List<DisplayFeedback> GetAllFeedback(int bookId);
     }
 }

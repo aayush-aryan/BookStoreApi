@@ -47,5 +47,57 @@ namespace RepositoryLayer.Services
                 sqlConnection.Close();
             }
         }
+
+        public List<DisplayFeedback> GetAllFeedback(int bookId)
+        {
+            try
+            {
+                this.sqlConnection = new SqlConnection(this.Configuration["ConnectionStrings:BooKStoreDb"]);
+                SqlCommand cmd = new SqlCommand("spGetFeedback", this.sqlConnection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@BookId", bookId);
+                sqlConnection.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.HasRows)
+                {
+                    List<DisplayFeedback> feedbackModel = new List<DisplayFeedback>();
+                    while (reader.Read())
+                    {
+                        DisplayFeedback getFeedback = new DisplayFeedback();
+                        UserModel user = new UserModel
+                        {
+                            FullName = reader["FullName"].ToString()
+                        };
+
+                        getFeedback.FeedbackId = Convert.ToInt32(reader["FeedbackId"]);
+                        getFeedback.Comment = reader["Comment"].ToString();
+                        getFeedback.Rating = Convert.ToInt32(reader["Rating"]);
+                        getFeedback.BookId = Convert.ToInt32(reader["BookId"]);
+                        getFeedback.User = user;
+                        feedbackModel.Add(getFeedback);
+                    }
+                    sqlConnection.Close();
+                    return feedbackModel;
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+        }
+    
     }
 }
