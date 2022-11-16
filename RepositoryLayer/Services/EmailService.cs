@@ -34,7 +34,8 @@ namespace RepositoryLayer.Services
                                     $"<body>" +
                                     $"<h2> Dear BookStore User, </h2>\n" +
                                     $"<h3> Please click on the below link to reset password</h3>" +
-                                    $"<a href='https://localhost:44340/api/User/ResetPassword/aayush123/aayush123'> ClickHere </a>\n " +
+                                  //  $"<a href='https://localhost:44340/api/User/ResetPassword?newPassword={newPassword}&confirmPassword={confirmPassword}> ClickHere </a>\n " +
+                                      $"<h3>{token}</h3>"+
                                     $"<h3 style = \"color: #EA4335\"> \nThe link is valid for 1 hour </h3>" +
                                     $"</body>" +
                                    $"</html>";

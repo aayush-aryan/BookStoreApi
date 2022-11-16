@@ -45,6 +45,9 @@ namespace BookStoreApp
             services.AddTransient<ICartRL, CartRL>();
             services.AddTransient<ICartBL, CartBL>();
 
+            services.AddTransient<IWishListBL, WishListBL>();
+            services.AddTransient<IWishListRL, WishListRL>();
+
             services.AddControllers();
 
 
