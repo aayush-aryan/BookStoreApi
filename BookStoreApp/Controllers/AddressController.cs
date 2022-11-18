@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.Interface;
 using CommonLayer.model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -75,6 +76,31 @@ namespace BookStoreApp.Controllers
                 else
                 {
                     return this.BadRequest(new { Status = false, Message = result });
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        [Authorize(Roles = Role.User)]
+        [HttpGet("GetAllAddress")]
+        [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
+        public IActionResult GetAllAddress()
+        {
+            try
+            {
+                int userId = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "userID").Value);
+                var result = addressBL.GetAllAddresses(userId);
+                if (result != null)
+                {
+                    return Ok(new { success = true, message = "Geting AllAddress sucessfully", data = result });
+                }
+                else
+                {
+                    return BadRequest(new { success = false, message = "Faild to Get All Addresses" });
                 }
             }
             catch (Exception ex)

@@ -12,5 +12,6 @@ namespace CommonLayer.model
         public string City { get; set; }
         public string State { get; set; }
         public int TypeId { get; set; }
+        public string AddressType { get; set; }
     }
 }
